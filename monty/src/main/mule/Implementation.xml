@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:monty-api="http://www.mulesoft.org/schema/mule/monty-api"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/monty-api http://www.mulesoft.org/schema/mule/monty-api/current/mule-monty-api.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<monty-api:config name="Monty_API_Config" doc:name="Monty API Config" doc:id="04589203-e36a-424a-84c3-13171f6a17cd" />
+	<sub-flow name="UriIDFlow" doc:id="3c56399c-680c-4bfc-a6bf-404004442f02" >
+		<set-variable value="#[attributes.uriParams.id]" doc:name="ID" doc:id="e0eaa0b1-45c5-4222-9202-869dec6e1b7a" variableName="id" />
+	</sub-flow>
+	<sub-flow name="QueryParams" doc:id="c14660a0-aa5a-40f7-9306-850d5d687513" >
+		<set-variable value="#[attributes.queryParams.name]" doc:name="Name" doc:id="f38b5fe6-52c8-4501-a9b7-c9af9cc1db17" variableName="name" />
+		<set-variable value="#[attributes.queryParams.status]" doc:name="Status" doc:id="f1950a1d-3002-4af0-beb5-05c39138e335" variableName="status" />
+		<set-variable value="#[attributes.queryParams.pagination]" doc:name="Pagination" doc:id="2e86a6fb-c36c-44c3-b8bd-4f1ed51e20d4" variableName="pagination" />
+	</sub-flow>
+	<flow name="GetAllData_Flow" doc:id="65a7eacf-79a2-4c34-a737-31c8272cbbfd" >
+		<flow-ref doc:name="Flow Reference" doc:id="bc29efb5-07ea-493f-9edf-e363f82aa101" name="QueryParams" />
+		<monty-api:get-all-data doc:name="Get All data" doc:id="91063c05-8f43-4e56-8bb8-0fb11765673a" config-ref="Monty_API_Config" sc-name="#[vars.name]" status="#[vars.status]" pagination="#[vars.pagination]"/>
+		<ee:transform doc:name="Transform Message" doc:id="17cb78a0-0d68-41ef-8691-ed4b45aca0ca" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="ID_Flow" doc:id="020dfdda-bd7e-49c2-a306-94f213f2662b" >
+		<logger level="INFO" doc:name="Logger" doc:id="13bfaf8e-2993-4242-9a76-9c4eaa7eab5d" message="List of episode"/>
+		<flow-ref doc:name="UriIDFlow" doc:id="77b30057-0add-4180-a637-6df6f8e7389c" name="UriIDFlow" />
+		<monty-api:get-character-by-id doc:name="Get character by id" doc:id="fc16c7c6-140c-4799-b301-408f8a4f7e2d" config-ref="Monty_API_Config" id="#[vars.id]" />
+		<ee:transform doc:name="Transform Message" doc:id="a77c0ba5-59a8-4185-bfa9-3f3d7e2ac760" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+ "Id": payload.id,
+ "name": payload.name,
+ "status": payload.status,
+ "species": payload.species,
+ "gender": payload.gender,
+ "origin": payload.origin.name,
+ "location": payload.location.name,
+ "image": payload.image,
+ "date Created": payload.created
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="LocationFlow" doc:id="b2fd20e9-ccd5-4e76-8a19-db50ef7c15b5" >
+		<monty-api:get-locations doc:name="Get locations" doc:id="593d5740-ffb6-4f8b-9188-8db714bf0926" config-ref="Monty_API_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="f8b5a1c7-971f-4ce1-bd3b-c4242be3490e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="Location_ID" doc:id="661e2153-8bb2-4f71-8747-56e00242e571" >
+		<flow-ref doc:name="UriIDFlow" doc:id="775c2e0a-c255-4425-9b0c-755be88a4339" name="UriIDFlow"/>
+		<monty-api:get-location-by-id doc:name="Get location by id" doc:id="b3d24f6f-fb00-465e-bc83-1232bc188f0f" config-ref="Monty_API_Config" id="#[vars.id]"/>
+		<ee:transform doc:name="Transform Message" doc:id="4e6e8b28-ea25-4174-b2b8-fa1adfa6487d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[output application/json
+---
+{
+ "Id": payload.id,
+ "name": payload.name,
+ "dimension": payload.dimension,
+ "residents": payload.residents,
+ "url": payload.url,
+ "created": payload.created
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="EpisodeFlow" doc:id="e51b1896-e36f-41c7-8853-8a91fa6314b6" >
+		<monty-api:get-episodes doc:name="Get episodes" doc:id="2d68f505-9835-44c5-b42c-40f6127e11f9" config-ref="Monty_API_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="cb08cb61-1742-4a14-9e45-c1e5c6dea7c1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="EpisodeIDFlow" doc:id="5e437613-0e36-415e-bb46-a9dc5de07168" >
+		<flow-ref doc:name="UriIDFlow" doc:id="ab70bf8d-0838-43b3-986c-7e90a5b0ee4b" name="UriIDFlow"/>
+		<monty-api:get-episode-by-id doc:name="Get episode by id" doc:id="89abfb40-8c16-4692-a770-4b76bc49d7b9" config-ref="Monty_API_Config" id="#[vars.id]"/>
+		<ee:transform doc:name="Transform Message" doc:id="3cf60105-3b30-4929-a089-9e0c4fc95f56" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

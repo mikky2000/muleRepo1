@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_c14660a0_aa5a_40f7_9306_850d5d687513_Output_Variables_status = Any
+
