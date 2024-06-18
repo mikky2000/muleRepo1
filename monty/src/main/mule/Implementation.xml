@@ -37,7 +37,7 @@ output application/json
 ---
 {
  "Id": payload.id,
- "name": payload.name,
+ "names": payload.name,
  "status": payload.status,
  "species": payload.species,
  "gender": payload.gender,
