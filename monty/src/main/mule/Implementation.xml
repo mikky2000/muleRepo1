@@ -15,6 +15,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<set-variable value="#[attributes.queryParams.pagination]" doc:name="Pagination" doc:id="2e86a6fb-c36c-44c3-b8bd-4f1ed51e20d4" variableName="pagination" />
 	</sub-flow>
 	<flow name="GetAllData_Flow" doc:id="65a7eacf-79a2-4c34-a737-31c8272cbbfd" >
+		<logger level="INFO" doc:name="Logger" doc:id="5a4a0696-ecb2-4715-b931-3ecb5288e643" message="Flow initiated before output data"/>
 		<flow-ref doc:name="Flow Reference" doc:id="bc29efb5-07ea-493f-9edf-e363f82aa101" name="QueryParams" />
 		<monty-api:get-all-data doc:name="Get All data" doc:id="91063c05-8f43-4e56-8bb8-0fb11765673a" config-ref="Monty_API_Config" sc-name="#[vars.name]" status="#[vars.status]" pagination="#[vars.pagination]"/>
 		<ee:transform doc:name="Transform Message" doc:id="17cb78a0-0d68-41ef-8691-ed4b45aca0ca" >
