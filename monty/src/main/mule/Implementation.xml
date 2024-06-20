@@ -36,7 +36,7 @@ payload]]></ee:set-payload>
 output application/json
 ---
 {
- "Id": payload.id,
+ "Ids": payload.id,
  "names": payload.name,
  "status": payload.status,
  "species": payload.species,
