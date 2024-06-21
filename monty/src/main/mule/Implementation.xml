@@ -18,6 +18,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<logger level="INFO" doc:name="Logger" doc:id="5a4a0696-ecb2-4715-b931-3ecb5288e643" message="Flow initiated before output data"/>
 		<flow-ref doc:name="Flow Reference" doc:id="bc29efb5-07ea-493f-9edf-e363f82aa101" name="QueryParams" />
 		<monty-api:get-all-data doc:name="Get All data" doc:id="91063c05-8f43-4e56-8bb8-0fb11765673a" config-ref="Monty_API_Config" sc-name="#[vars.name]" status="#[vars.status]" pagination="#[vars.pagination]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="38ecf4ae-80cb-49fd-9773-d347e98ed719" message="Flow initiated after output data"/>
 		<ee:transform doc:name="Transform Message" doc:id="17cb78a0-0d68-41ef-8691-ed4b45aca0ca" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
