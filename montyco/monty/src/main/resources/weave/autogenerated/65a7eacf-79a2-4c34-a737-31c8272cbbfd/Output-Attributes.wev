@@ -1,8 +1,0 @@
-%dw 2.0
-
-type auto_65a7eacf_79a2_4c34_a737_31c8272cbbfd_Output_Attributes = {|
-  headers?: { _?: String }, 
-  reasonPhrase?: String, 
-  statusCode?: Number
-|} {"typeId": "org.mule.extension.http.api.HttpResponseAttributes"}
-
