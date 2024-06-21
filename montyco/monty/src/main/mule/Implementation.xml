@@ -53,7 +53,9 @@ output application/json
 		</ee:transform>
 	</flow>
 	<flow name="LocationFlow" doc:id="b2fd20e9-ccd5-4e76-8a19-db50ef7c15b5" >
+		<logger level="INFO" doc:name="Logger" doc:id="c772c458-fc17-48dc-8e11-e95b52e04914" message="Logger before main flow"/>
 		<monty-api:get-locations doc:name="Get locations" doc:id="593d5740-ffb6-4f8b-9188-8db714bf0926" config-ref="Monty_API_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="030d3911-55f4-4b5f-9d59-a2dfce988208" message="Logger after main flow"/>
 		<ee:transform doc:name="Transform Message" doc:id="f8b5a1c7-971f-4ce1-bd3b-c4242be3490e" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
